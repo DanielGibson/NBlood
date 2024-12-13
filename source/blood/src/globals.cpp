@@ -80,10 +80,13 @@ void _consoleSysMsg(const char* pzFormat, ...) {
     OSD_Printf(OSDTEXT_RED "%s(%i): %s\n", _module, _line, buffer);
 }
 
+#include <signal.h>
 
 void __dassert(const char * pzExpr, const char * pzFile, int nLine)
 {
     LOG_F(ERROR, "Assertion failed: %s in file %s at line %i", pzExpr, pzFile, nLine);
+
+    raise( SIGTRAP ); // XXX: hacky: break into debugger on Linux
 
 #ifdef WM_MSGBOX_WINDOW
     char titlebuf[256];
