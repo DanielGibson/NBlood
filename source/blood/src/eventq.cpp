@@ -644,12 +644,17 @@ void EventQLoadSave::Load()
 
 void EventQLoadSave::Save()
 {
-    EVENT events[1024];
-    unsigned int eventstime[1024];
+    EVENT events[4096];
+    unsigned int eventstime[4096];
+    uint32_t nEvents = eventQ.PQueue->Size();
+    printf("\n XXX EventQLoadSave::Save(): %d events\n\n", nEvents);
+    // DG: increased the number of elements in events and eventstime from 1024 to 4096
+    //     because I got crashes when saving in What Lies Beneath (Haunted Gardens map)
+    //     where I had 1863 events. I hope that's enough..
+    assert(nEvents < sizeof(events) / sizeof(events[0]));
     Write(&eventQ, sizeof(eventQ));
-    int nEvents = eventQ.PQueue->Size();
     Write(&nEvents, sizeof(nEvents));
-    for (int i = 0; i < nEvents; i++)
+    for (uint32_t i = 0; i < nEvents; i++)
     {
         eventstime[i] = eventQ.PQueue->LowestPriority();
         events[i] = eventQ.ERemove();
@@ -657,7 +662,7 @@ void EventQLoadSave::Save()
         Write(&events[i], sizeof(events[i]));
     }
     dassert(eventQ.PQueue->Size() == 0);
-    for (int i = 0; i < nEvents; i++)
+    for (uint32_t i = 0; i < nEvents; i++)
     {
         eventQ.PQueue->Insert(eventstime[i], events[i]);
     }
