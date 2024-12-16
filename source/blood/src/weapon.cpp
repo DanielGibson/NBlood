@@ -1039,8 +1039,16 @@ void FirePitchfork(int, PLAYER *pPlayer)
     int r1 = Random2(2000);
     int r2 = Random2(2000);
     int r3 = Random2(2000);
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++) {
+  #ifdef BLOOD_WLB
+        // the What Lies Beneath mod always passes 0 as second argument
+        // so the effects and damage hit the same spot 4 times
+        // (only one tip but same damage as pitchfork)
         actFireVector(pPlayer->pSprite, 0, pPlayer->zWeapon-pPlayer->pSprite->z, aim->dx+r1, aim->dy+r2, aim->dz+r3, kVectorTine);
+  #else
+        actFireVector(pPlayer->pSprite, (2*i-3)*40, pPlayer->zWeapon-pPlayer->pSprite->z, aim->dx+r1, aim->dy+r2, aim->dz+r3, kVectorTine);
+  #endif
+    }
 }
 
 void FireSpray(int, PLAYER *pPlayer)

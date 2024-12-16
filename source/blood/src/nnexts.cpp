@@ -6079,13 +6079,21 @@ void playerQavSceneReset(PLAYER* pPlayer) {
 }
 
 bool playerSizeShrink(PLAYER* pPlayer, int divider) {
-    pPlayer->pXSprite->scale = 0 / divider;
+  #ifdef BLOOD_WLB // the What Lies Beneath mod uses scale 0 here because it doesn't support shrinking
+    pPlayer->pXSprite->scale = 0;
+  #else
+    pPlayer->pXSprite->scale = 256 / divider;
+  #endif
     playerSetRace(pPlayer, kModeHumanShrink);
     return true;
 }
 
 bool playerSizeGrow(PLAYER* pPlayer, int multiplier) {
-    pPlayer->pXSprite->scale = 0 * multiplier;
+  #ifdef BLOOD_WLB // the What Lies Beneath mod uses scale 0 here because it doesn't support growing
+    pPlayer->pXSprite->scale = 0;
+  #else
+    pPlayer->pXSprite->scale = 256 * multiplier;
+  #endif
     playerSetRace(pPlayer, kModeHumanGrown);
     return true;
 }
